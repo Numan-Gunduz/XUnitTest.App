@@ -16,7 +16,7 @@ namespace unitTest.Test
         public CalculaterTest()
         {
 
-             mymock = new Mock<ICalculaterService>();
+            mymock = new Mock<ICalculaterService>();
             this.calculater = new Calculater(mymock.Object);
         }
         //[Fact]
@@ -70,7 +70,7 @@ namespace unitTest.Test
 
 
             mymock.Setup(x => x.add(a, b)).Returns(Expectedtotal);
-           
+
             var actualTotal = calculater.add(a, b);
             Assert.Equal(Expectedtotal, actualTotal);
 
@@ -88,11 +88,32 @@ namespace unitTest.Test
         }
         [Theory]
         [InlineData(2, 5, 10)]
-        
+
         public void Multip_simpleValue_ReturnMultipValue(int a, int b, int ExpectedValue)
         {
-            mymock.Setup(x => x.Mul(a, b)).Returns(ExpectedValue);
-            Assert.Equal(10, ExpectedValue);
+            int actualMul=0;
+            mymock.Setup(x => x.Mul(It.IsAny<int>(), It.IsAny<int>())).Callback<int, int>((x, y) => actualMul = x * y);
+            calculater.Mul(a, b);
+            Assert.Equal(ExpectedValue, actualMul);
+            calculater.Mul(5, 20);
+            Assert.Equal(100,actualMul);
+
+           // mymock.Verify(x => x.Mul(a, b), Times.Once);//testin hiç çalışmamış olmasını kontrol et .
+
+
+
+
+
+        }
+
+        [Theory]
+        [InlineData(0,5)]
+
+        public void Multip_Zero_ReturnException(int a, int b)
+        {
+            mymock.Setup(x => x.Mul(a, b)).Throws(new Exception("a=0 olamaz"));
+            var exception = Assert.Throws<Exception>(() => calculater.Mul(a, b));
+            Assert.Equal("a=0 olamaz",exception.Message);
         }
     }
 }

@@ -13,7 +13,12 @@ namespace UnitTest.App
             return 0;
 
         }
-        public int Mul(int a, int b) { 
+        public int Mul(int a, int b) 
+        { 
+            if(a == 0)
+            {
+                throw new Exception("a=0 olamaz");
+            }
             return a*b; 
         }
         //{
