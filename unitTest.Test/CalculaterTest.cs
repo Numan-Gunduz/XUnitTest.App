@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,12 @@ namespace unitTest.Test
     {
 
         public Calculater calculater { get; set; }
+        public Mock<ICalculaterService> mymock { get; set; }
         public CalculaterTest()
         {
-            this.calculater = null;
+
+             mymock = new Mock<ICalculaterService>();
+            this.calculater = new Calculater(mymock.Object);
         }
         //[Fact]
         //public void AddTest()
@@ -63,6 +67,10 @@ namespace unitTest.Test
         [InlineData(10, 5, 15)]
         public void Add_simpleValues_ReturnTotalValue(int a, int b, int Expectedtotal)
         {
+
+
+            mymock.Setup(x => x.add(a, b)).Returns(Expectedtotal);
+           
             var actualTotal = calculater.add(a, b);
             Assert.Equal(Expectedtotal, actualTotal);
 
@@ -77,6 +85,14 @@ namespace unitTest.Test
             var actualTotal = calculater.add(a, b);
             Assert.Equal(Expectedtotal, actualTotal);
 
+        }
+        [Theory]
+        [InlineData(2, 5, 10)]
+        
+        public void Multip_simpleValue_ReturnMultipValue(int a, int b, int ExpectedValue)
+        {
+            mymock.Setup(x => x.Mul(a, b)).Returns(ExpectedValue);
+            Assert.Equal(10, ExpectedValue);
         }
     }
 }

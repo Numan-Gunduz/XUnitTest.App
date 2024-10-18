@@ -9,5 +9,7 @@ namespace UnitTest.App
     public interface ICalculaterService
     {
         int add(int a, int b);
+        int Mul(int a, int b);
     }
+
 }
